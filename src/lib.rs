@@ -150,17 +150,22 @@ impl Tag {
                 .as_str(),
         )?) {
             TagType::Id3v2 => Ok(Box::new({
-                let mut t = Id3v2Tag::read_from_path(path)?;
+                let mut t = Id3v2Tag::read_from_path_inner(path)?;
                 t.set_config(self.config);
                 t
             })),
+            // TagType::Wav => Ok(Box::new({
+            //     let mut t = WavTag::read_from_path(path)?;
+            //     t.set_config(self.config);
+            //     t
+            // })),
             TagType::Mp4 => Ok(Box::new({
-                let mut t = Mp4Tag::read_from_path(path)?;
+                let mut t = Mp4Tag::read_from_path_inner(path)?;
                 t.set_config(self.config);
                 t
             })),
             TagType::Flac => Ok(Box::new({
-                let mut t = FlacTag::read_from_path(path)?;
+                let mut t = FlacTag::read_from_path_inner(path)?;
                 t.set_config(self.config);
                 t
             })),
@@ -178,6 +183,14 @@ pub enum TagType {
     ///
     /// - <https://www.wikiwand.com/en/ID3>
     Id3v2,
+    /// ## Common file extensions
+    ///
+    /// `.wav, .wave`
+    ///
+    /// ## References
+    ///
+    /// - <https://www.wikiwand.com/en/WAV>
+    // Wav,
     Flac,
     /// ## Common file extensions
     ///
@@ -193,7 +206,8 @@ pub enum TagType {
 impl TagType {
     fn try_from_ext(ext: &str) -> crate::Result<Self> {
         match ext {
-                                                     "mp3" => Ok(Self::Id3v2),
+            "wave" | "wav" | "mp3" => Ok(Self::Id3v2),
+                                            // "wave" | "wav" => Ok(Self::Wav),
             "m4a" | "m4b" | "m4p" | "m4v" | "isom" | "mp4" => Ok(Self::Mp4),
                                                     "flac" => Ok(Self::Flac),
             p => Err(crate::Error::UnsupportedFormat(p.to_owned())),

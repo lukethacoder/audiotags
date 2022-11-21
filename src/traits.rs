@@ -1,6 +1,6 @@
 use super::*;
 
-pub trait AudioTag: AudioTagEdit + AudioTagWrite + ToAnyTag {}
+pub trait AudioTag: AudioTagEdit + AudioTagWrite + AudioTagRead + ToAnyTag {}
 
 // pub trait TagIo {
 //     fn read_from_path(path: &str) -> crate::Result<AnyTag>;
@@ -142,6 +142,11 @@ pub trait AudioTagWrite {
     fn write_to_path(&mut self, path: &str) -> crate::Result<()>;
 }
 
+pub trait AudioTagRead {
+    // cannot use impl AsRef<Path>
+    fn read_from_path_inner(&mut self, path: str) -> crate::Result<()>;
+}
+
 pub trait AudioTagConfig {
     fn config(&self) -> &Config;
     fn set_config(&mut self, config: Config);
@@ -156,6 +161,7 @@ pub trait ToAnyTag: ToAny {
         // TODO: target type is the same, just return self
         match tag_type {
             TagType::Id3v2 => Box::new(Id3v2Tag::from(self.to_anytag())),
+            // TagType::Wav => Box::new(Id3v2Tag::from(self.to_anytag())),
             TagType::Mp4 => Box::new(Mp4Tag::from(self.to_anytag())),
             TagType::Flac => Box::new(FlacTag::from(self.to_anytag())),
         }

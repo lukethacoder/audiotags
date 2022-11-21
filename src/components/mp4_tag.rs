@@ -295,3 +295,10 @@ impl AudioTagWrite for Mp4Tag {
         Ok(())
     }
 }
+
+impl AudioTagRead for Mp4Tag {
+    fn read_from_path_inner(&mut self, path: &str) -> crate::Result<()> {
+        mp4ameta::Tag::read_from_path(path)?;
+        Ok(())
+    }
+}

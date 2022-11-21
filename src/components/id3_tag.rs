@@ -262,6 +262,13 @@ impl AudioTagWrite for Id3v2Tag {
     }
 }
 
+impl AudioTagRead for Id3v2Tag {
+    fn read_from_path_inner(&mut self, path: &str) -> crate::Result<()> {
+        id3::Tag::read_from_path(path)?;
+        Ok(())
+    }
+}
+
 // impl<'a> From<AnyTag<'a>> for Id3Tag {
 //     fn from(anytag: AnyTag) -> Self {
 //         Self {

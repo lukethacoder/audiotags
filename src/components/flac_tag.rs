@@ -262,3 +262,10 @@ impl AudioTagWrite for FlacTag {
         Ok(())
     }
 }
+
+impl AudioTagRead for FlacTag {
+    fn read_from_path_inner(&mut self, path: &str) -> crate::Result<()> {
+        metaflac::Tag::read_from_path(path)?;
+        Ok(())
+    }
+}
